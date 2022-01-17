@@ -1,0 +1,31 @@
+.container-table {
+  overflow: auto;
+  max-width: 1000px;
+  margin: 10px auto auto;
+  text-align: center;
+  color: #dff9fb;
+  border-radius: 5px;
+}
+
+table{
+  background-color: #192a56;
+}
+
+thead td , 
+thead th {
+  outline: 1px solid;
+  outline-color: #c7ecee;
+  padding: 8px;
+}
+
+tbody>tr:nth-child(odd) {
+  background: #273c75;
+}
+
+tbody>tr {
+  border-bottom: 1px solid;
+}
+
+tbody td{
+  padding: 8px 0;
+}
