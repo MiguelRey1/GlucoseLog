@@ -10,10 +10,15 @@
 }
 
 .container-2{
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
 .container-table{
   overflow: auto;
+  max-width: 1000px;
+  margin: 10px auto auto;
+  text-align: center;
+  color: #dff9fb;
+  
 }
