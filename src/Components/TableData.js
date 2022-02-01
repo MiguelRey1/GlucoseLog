@@ -15,7 +15,7 @@ const TableData = (props) => {
       <TableBody>
         <TableRows 
         onHandleDelete={props.onHandleDelete} 
-        onHandleModifier={props.onHandleModifier} 
+        onHandleEdit={props.onHandleEdit} 
         dataLog={props.dataLog} 
         />
       </TableBody>

@@ -1,6 +1,7 @@
 .container-table {
   overflow: auto;
   max-width: 1000px;
+  max-height: 300px;
   margin: 10px auto auto;
   text-align: center;
   color: #dff9fb;
