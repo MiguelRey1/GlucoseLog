@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # firabase config
-/firabase-config
+/src/Firebase-config/

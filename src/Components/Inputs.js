@@ -33,19 +33,19 @@ const Inputs = (props) => {
         className="inputs-texts" 
         placeholder={props.placeHolder}
         ref={props.refNvlGlucosa}
-        type="text"
+        type="number"
       />
       <label >Hora de Comida</label>
 
       {/* onChange={(e)=> props.change(e)} */}
-      <select ref={props.refHoraComida} >
+      <select className="inputs-selects" ref={props.refHoraComida} >
         <option value="desayuno">Desayuno</option>
         <option value="almuerzo">Almuerzo</option>
         <option value="cena">Cena</option>
       </select>
 
       <label >Momento de la toma</label>
-      <select ref={props.refHoraToma} >
+      <select className="inputs-selects" ref={props.refHoraToma} >
         <option value="antes">Antes</option>
         <option value="despues">Despues</option>
       </select>

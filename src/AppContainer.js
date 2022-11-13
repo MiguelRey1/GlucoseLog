@@ -5,44 +5,7 @@ import "./AppContainer.css";
 import { db } from "./Firebase-config/firebaseconfig"
 import { doc, collection , getDocs, setDoc, deleteDoc} from 'firebase/firestore';
 
-  const LogBook = [
-  {
-    id: 1,
-    fecha: "09/01/22",
-    hora: "9:09",
-    desayuno: {
-      antes: 126,
-      despues: 180,
-    },
-    almuerzo: {
-      antes: 180,
-      despues: 250,
-    },
-    cena: {
-      antes: 100,
-      despues: 200,
-    },
-    medicamento: "insulina Levemir",
-  },
-  {
-    id: 2,
-    fecha: "10/01/22",
-    hora: "11:15",
-    desayuno: {
-      antes: 126,
-      despues: 180,
-    },
-    almuerzo: {
-      antes: 180,
-      despues: 250,
-    },
-    cena: {
-      antes: 100,
-      despues: 200,
-    },
-    medicamento: "insulina Levemir",
-  },
-  ];
+
 
 class AppContainer extends Component {
   constructor(props) {
@@ -51,10 +14,11 @@ class AppContainer extends Component {
     this.refNvlGlucosa = createRef();
     this.refHoraComida = createRef();
     this.refHoraToma = createRef();
-
+    
     this.state = {
       data: [],
       docID:"",
+      objID: 0,
       dataChange: {
         id: null,
         fecha: new Date().toLocaleDateString(),
@@ -92,42 +56,23 @@ class AppContainer extends Component {
         medicamento: "",
       },
 
-     /*  refs: {
-        desayuno: {
-          antes: this.txtDesayunoAntes,
-          despues: this.txtDesayunoDespues,
-        },
-        almuerzo: {
-          antes: this.txtAlmuerzoAntes,
-          despues: this.txtAlmuerzoDespues,
-        },
-        cena: {
-          antes: this.txtCenaAntes,
-          despues: this.txtCenaDespues,
-        },
-        medicamento: this.txtMedicamento,
-      }, */
-
       refs:{
         inputmedicamento: this.refInputMedicamento,
         nvlglucosa: this.refNvlGlucosa,
         horacomida: this.refHoraComida,
         horatoma: this.refHoraToma
       },
-      objID: null,
     };
   }
   async componentDidMount() {
     const docRefs = await getDocs(collection(db, "logs"));
     let lista = docRefs.docs.map((doc)=> doc.data());
-    // let docIDs = docRefs.docs.map((doc)=> doc.id);
+  
     this.setState({
       data: [...lista],
     })
     console.log( lista);
-    /* docRefs.forEach((doc)=>{
-      console.log(doc.data().medicamento)
-    }) */
+   
   }
 
   async componentDidUpdate(){
@@ -140,42 +85,27 @@ class AppContainer extends Component {
   
   }
 
-  getData = async () =>{
-
-  }
-
   addData = async (obj) =>{
-    const newLogRef = doc(collection(db, "logs"))
-    await setDoc(newLogRef, obj)
-  }
 
-  handleAdd = (obj) => {
-    /* this.setState({
-      dataChange: {
-        id: this.state.dataChange.id + 1,
-        fecha: new Date().toLocaleDateString(),
-        hora: new Date().toLocaleTimeString(undefined, {
-          hour: "numeric",
-          minute: "numeric",
-        }),
-        desayuno: {
-          antes: obj.desayuno.antes,
-          despues: obj.desayuno.despues,
-        },
-        almuerzo: {
-          antes: obj.almuerzo.antes,
-          despues: obj.almuerzo.despues,
-        },
-        cena: {
-          antes: obj.cena.antes,
-          despues: obj.cena.despues,
-        },
-        medicamento: obj.medicamento,
-      },
-    });
-    this.state.data.push(this.state.dataChange); */
-    console.log(this.state.data)
-  };
+    let medicine = this.refInputMedicamento.current.value;
+    let lvlGlucose = this.refNvlGlucosa.current.value;
+    let objId = this.state.objID;
+
+    if(objId !== 0){
+      this.setState({
+        objID: 0
+      })
+    }
+
+    if (medicine !== ""  && lvlGlucose !== ""  && objId === 0){
+      console.log("All it's working well !!!");
+      const newLogRef = doc(collection(db, "logs"))
+      await setDoc(newLogRef, obj)
+    } else {
+      console.log("Ooops!!!, something was wrong");
+    }
+
+  }
 
   /**
   ** Este Metodo llamado "getID" sirve para llamar o obtener el id generado automaticamente del documento
@@ -191,7 +121,7 @@ class AppContainer extends Component {
         })
       }
     })
-    // console.log(this.state.docID)
+
   }
 
   Edit = (e) => {
@@ -249,53 +179,37 @@ class AppContainer extends Component {
 
   };
 
-  updateData = async (obj) => {
+  updateData = async (e,obj) => {
     
-    this.setState({
-      dataUpdate: {
-        desayuno: {
-          antes: obj.desayuno.antes,
-          despues: obj.desayuno.despues,
+   
+      this.setState({
+        objID: 0,
+        dataUpdate: {
+          desayuno: {
+            antes: obj.desayuno.antes,
+            despues: obj.desayuno.despues,
+          },
+          almuerzo: {
+            antes: obj.almuerzo.antes,
+            despues: obj.almuerzo.despues,
+          },
+          cena: {
+            antes: obj.cena.antes,
+            despues: obj.cena.despues,
+          },
+          medicamento: obj.medicamento,
         },
-        almuerzo: {
-          antes: obj.almuerzo.antes,
-          despues: obj.almuerzo.despues,
-        },
-        cena: {
-          antes: obj.cena.antes,
-          despues: obj.cena.despues,
-        },
-        medicamento: obj.medicamento,
-      },
-    })
+      })
 
-    const docUpdateRef = doc(db, "logs", this.state.docID);
-    setDoc(docUpdateRef, this.state.dataUpdate, {merge: true});
+      let medicine = this.refInputMedicamento.current.value;
+      let lvlGlucose = this.refNvlGlucosa.current.value;
 
+      if (this.state.objID !== 0 && medicine !== "" && lvlGlucose !== ""){
+        const docUpdateRef = doc(db, "logs", this.state.docID);
+        setDoc(docUpdateRef, this.state.dataUpdate, {merge: true});
+        console.log("it's working");
+      } 
 
-   /*  let lista = this.state.data.map((element) => {
-      if (element.id === this.state.objID) {
-        element.desayuno.antes = this.txtDesayunoAntes.current.value;
-        element.desayuno.despues = this.txtDesayunoDespues.current.value;
-        element.almuerzo.antes = this.txtAlmuerzoAntes.current.value;
-        element.almuerzo.despues = this.txtAlmuerzoDespues.current.value;
-        element.cena.antes = this.txtCenaAntes.current.value;
-        element.cena.despues = this.txtCenaDespues.current.value;
-        element.medicamento = this.txtMedicamento.current.value;
-      }
-      return element;
-    });
-    console.log(...lista);
-    this.setState({
-      data: [...lista],
-    });
-    this.txtDesayunoAntes.current.value = "";
-    this.txtDesayunoDespues.current.value = "";
-    this.txtAlmuerzoAntes.current.value = "";
-    this.txtAlmuerzoDespues.current.value = "";
-    this.txtCenaAntes.current.value = "";
-    this.txtCenaDespues.current.value = "";
-    this.txtMedicamento.current.value = ""; */
   };
 
   handleDelete = async (e) => {
@@ -304,24 +218,14 @@ class AppContainer extends Component {
     let id = Number.parseInt(e.target.id);
     await this.getID(id);
     await deleteDoc(doc(db, "logs", this.state.docID))
-    // console.log(id)
-    // console.log(this.getID())
     
-    /* this.state.data.forEach((element) => {
-      if (element.id === id) {
-        return this.state.data.splice(this.state.data.indexOf(element), 1);
-      }
-    }); */
-   
-   /*  this.setState({
-      data: this.state.data,
-    }); */
   };
 
 
   render() {
     return (
       <div className="container">
+        <h1 className="container-title">Glucose Log</h1>
         <section className="container-2">
           <FormsInputs
             object={this.state.dataUpdate}
